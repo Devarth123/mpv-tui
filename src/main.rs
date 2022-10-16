@@ -115,17 +115,14 @@ fn init<B: Backend>(term: &mut Terminal<B>) -> io::Result<()> {
     let mut app = App::new();
     let mut counter = 1;
     loop {
+        let size;
+        {
+            size = term.size().unwrap();
+        }
+        if size.height < 30 || size.width < 30 {
+            continue;
+        }
         term.draw(|f| {
-            // app.center_rect = centered_rect(60, 20, term.size().unwrap());
-            // if let Ok(size) = term.size() {
-            //     if size.height < 20 || size.width < 20 {
-            //         app.show_popup = Popup::SizeErr;
-            //     }
-            //     if size.height > 20 && size.width > 20 {
-            //         app.close_popups(f)
-            //     }
-            // }
-
             ui(f, &app);
         })?;
 
@@ -196,8 +193,7 @@ fn init<B: Backend>(term: &mut Terminal<B>) -> io::Result<()> {
 fn settings(app: &App) -> Paragraph {
     Paragraph::new(format!(
         "Hyprland Support -> {}\n\nNo video        -> {}",
-        app.settings.hyprland_support,
-        app.settings.no_video
+        app.settings.hyprland_support, app.settings.no_video
     ))
     .block(
         Block::default()
